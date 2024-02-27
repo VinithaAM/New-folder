@@ -11,7 +11,7 @@ const Sidebar = () => {
         <div style={{ flex: 1, padding: '10px' }}>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/NewPlanner" element={<AddPlanner/>} />
+            <Route path="/NewPlanner" element={<AddPlanner plannerItem={undefined}/>} />
             
           </Routes>
         </div>

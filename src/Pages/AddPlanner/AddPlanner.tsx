@@ -1,16 +1,20 @@
 
 import Grid from "@mui/material/Grid";
 import NewPlanner from "../../Component/NewPlanner";
-interface componentNameProps {}
+import { IPlannerDetail, IPlannerHeader } from "../../Component/Planner";
+interface componentNameProps {
+  plannerItem:IPlannerDetail
+}
 
-const AddPlanner = (props: componentNameProps) => {
+const AddPlanner:React.FC<{ plannerItem: any }> = ({plannerItem}) => {
+  console.log("pla",plannerItem)
   const items = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'];
   return (
     <div className="container">
       <Grid container spacing={2}>
-      {items.map((item, index) => (
+      {plannerItem.map((item:any, index:any) => (
         <Grid item xl={12} key={index}>
-          <NewPlanner />
+          <NewPlanner plannerItem={item}/>
         </Grid>
          ))}
       </Grid>

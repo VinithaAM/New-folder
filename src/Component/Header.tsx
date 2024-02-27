@@ -22,7 +22,7 @@ const Header = () => {
       setAnchorElUser(null);
     };
     const handleNavigation = ()=>{
-      navigate("/NewPlanner")
+      navigate("/")
       setAnchorElUser(null);
     }
   return (

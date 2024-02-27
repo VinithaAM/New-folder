@@ -19,9 +19,28 @@ export interface IPlannerDetail extends CommonFields{
 }
 export interface CommonFields{
     createdBy:number;
-    createdDatetime:string | DateTime;
+    createdDatetime:  Date;
     modifiedBy:number;
-    modifiedDatetime:string |DateTime;
+    modifiedDatetime:Date;
     deletedBy:number;
-    deletedDatetime:string | DateTime;
+    deletedDatetime: Date;
 }
+export const dummyObject = {
+    id: 1,
+    headerId: 1,
+    name: 'Dummy Name',
+    schedulingLeadtime: 10,
+    attendantSheet: 2,
+    stretchers: 1,
+    acuity: 'A',
+    isMultiLoad: true,
+    servicedBy: 'Customer Feet',
+    isParalllelPickup: 1,
+    sequence: 1,
+    createdBy:1,
+    createdDatetime:new Date(),
+    modifiedBy:1,
+    modifiedDatetime:new Date(),
+    deletedBy:1,
+    deletedDatetime:new Date(),
+};

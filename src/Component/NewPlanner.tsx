@@ -9,8 +9,13 @@ import {  useState } from "react";
 import Form from "react-bootstrap/Form";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { IPlannerDetail } from "./Planner";
 
-const NewPlanner = () => {
+interface componentNameProps {
+  plannerItem:IPlannerDetail
+}
+const NewPlanner:React.FC<{ plannerItem: any }> = ({plannerItem})  => {
+  
   const [name, setName] = useState("");
   const [scheduleLeadTime, setSchesuleLeadTime] = useState();
   const [attendentSeat, setAttendentSeat] = useState("");
@@ -62,7 +67,7 @@ const NewPlanner = () => {
     <div className="container">
       <Grid container alignItems="center" spacing={0.5} margin={5}>
         <Grid item xs={6}>
-          <InputLabel style={{ color: "#040404", fontFamily: "sans-serif" }}>
+          <InputLabel style={{ color: "#040404", fontFamily: "sans-serif",textAlign:"left" }}>
             Name
             <InfoOutlinedIcon
               style={{ marginLeft: 10, width: 15, color: "#217AC0" }}
@@ -79,7 +84,7 @@ const NewPlanner = () => {
           />
         </Grid>
         <Grid item xs={6}>
-          <InputLabel style={{ color: "#040404", fontFamily: "sans-serif" }}>
+          <InputLabel style={{ color: "#040404", fontFamily: "sans-serif", textAlign:"left"  }}>
             Scheduling Lead time
             <InfoOutlinedIcon
               style={{ marginLeft: 10, width: 15, color: "#217AC0" }}
@@ -105,7 +110,7 @@ const NewPlanner = () => {
           />
         </Grid>
         <Grid item xs={6}>
-          <InputLabel style={{ color: "#040404", fontFamily: "sans-serif" }}>
+          <InputLabel style={{ color: "#040404", fontFamily: "sans-serif", textAlign:"left"  }}>
             Attendant Seats
             <InfoOutlinedIcon
               style={{ marginLeft: 10, width: 15, color: "#217AC0" }}
@@ -129,7 +134,7 @@ const NewPlanner = () => {
           </Select>
         </Grid>
         <Grid item xs={6}>
-          <InputLabel style={{ color: "#040404", fontFamily: "sans-serif" }}>
+          <InputLabel style={{ color: "#040404", fontFamily: "sans-serif",textAlign:"left"  }}>
             Stretchers
             <InfoOutlinedIcon
               style={{ marginLeft: 10, width: 15, color: "#217AC0" }}
@@ -153,7 +158,7 @@ const NewPlanner = () => {
           </Select>
         </Grid>
         <Grid item xs={6}>
-          <InputLabel style={{ color: "#040404", fontFamily: "sans-serif" }}>
+          <InputLabel style={{ color: "#040404", fontFamily: "sans-serif",textAlign:"left"  }}>
             Acuity
             <InfoOutlinedIcon
               style={{ marginLeft: 10, width: 15, color: "#217AC0" }}
@@ -185,7 +190,7 @@ const NewPlanner = () => {
           </Select>
         </Grid>
         <Grid item xs={6}>
-          <InputLabel style={{ color: "#040404", fontFamily: "sans-serif" }}>
+          <InputLabel style={{ color: "#040404", fontFamily: "sans-serif",textAlign:"left"  }}>
             MultiLoad Allowed?
             <InfoOutlinedIcon
               style={{ marginLeft: 10, width: 15, color: "#217AC0" }}
@@ -206,7 +211,7 @@ const NewPlanner = () => {
           </Select>
         </Grid>
         <Grid item xs={6}>
-          <InputLabel style={{ color: "#040404", fontFamily: "sans-serif" }}>
+          <InputLabel style={{ color: "#040404", fontFamily: "sans-serif",textAlign:"left"  }}>
             Serviced By
             <InfoOutlinedIcon
               style={{ marginLeft: 10, width: 15, color: "#217AC0" }}
@@ -227,7 +232,7 @@ const NewPlanner = () => {
           </Select>
         </Grid>
         <Grid item xs={6}>
-          <InputLabel style={{ color: "#040404", fontFamily: "sans-serif" }}>
+          <InputLabel style={{ color: "#040404", fontFamily: "sans-serif",textAlign:"left"  }}>
             Parallel Pickups/Dropoffs
             <InfoOutlinedIcon
               style={{ marginLeft: 10, width: 15, color: "#217AC0" }}

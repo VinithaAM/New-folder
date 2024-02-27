@@ -4,18 +4,36 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import AddPlanner from "../AddPlanner/AddPlanner";
-import { IPlannerHeader } from "../../Component/Planner";
+import { IPlannerDetail, dummyObject } from "../../Component/Planner";
 
   
 const Home = () => {
   const navigate = useNavigate();
   const [pageLoad,setPageLoad]=useState(true)
-  // const [plannerItem,setPlannerItem]=useState<PlannerHeader as IPlannerHeader>([] as)
-  const handleClick = () => {
+  const [plannerItem,setPlannerItem]=useState<IPlannerDetail[]>([dummyObject])
+  const [dummyObjectCount, setDummyObjectCount] = useState(1);
+  const handleClick = async() => {
+    
+    await handleAddDummyObject()
     setPageLoad(false)
+  };
+  const handleAddDummyObject = () => {
+    setDummyObjectCount(prevCount => prevCount + 1);
+    generateDummyObjects(dummyObjectCount)
+  };
+  const generateDummyObjects = (count:number) => {
+    const dummyObjects = [];
+    for (let i = 0; i < count; i++) {
+      const newDummyObject = dummyObject
+      dummyObjects.push(newDummyObject);
+    }
+    setPlannerItem(dummyObjects)
+    return dummyObjects;
   };
   const handleCancelFunction=()=>{
     setPageLoad(true)
+    setPlannerItem([dummyObject]);
+    console.log(plannerItem)
   }
   const handleSaveFunction =()=>{
     
@@ -25,7 +43,7 @@ const Home = () => {
       <Header></Header>
       <div>
         {pageLoad ?(
-        <span>
+        <span >
           <h3>Planners</h3>
           <p style={{ fontSize: 12 }}>
             Add Planner to allow customers to schedule their own trips. Each
@@ -33,7 +51,7 @@ const Home = () => {
             of transfers that can be scheduled
           </p>
         </span>)
-        :(<AddPlanner />)}
+        :(<AddPlanner plannerItem={plannerItem}/>)}
         <div>
 
           <AddCircleOutlineIcon
