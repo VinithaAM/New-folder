@@ -29,9 +29,9 @@ const NewPlanner: React.FC<{
   setPlannerItem: any;
 }> = ({ plannerItem, setPlannerItem }) => {
   const tempId = plannerItem.tempId;
-  const sortableProps = useSortable({ id: plannerItem.tempId });
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    sortableProps;
+  // const sortableProps = useSortable({ id: plannerItem.tempId });
+  // const { attributes, listeners, setNodeRef, transform, transition } =
+  //   sortableProps;
   console.log("newplanner",plannerItem)
   const [name, setName] = useState("");
   const [scheduleLeadTime, setSchesuleLeadTime] = useState();
@@ -121,8 +121,9 @@ const NewPlanner: React.FC<{
     setPlannerItem(Objects)
     console.log("planerItem",plannerItem)
   };
+  // ref={setNodeRef} {...attributes} {...listeners}
   return (
-    <div ref={setNodeRef} {...attributes} {...listeners}>
+    <div >
       <DndContext collisionDetection={closestCorners}></DndContext>
      
       <div style={{ borderLeft: "50px solid #004ed6",marginLeft:80 }}>
