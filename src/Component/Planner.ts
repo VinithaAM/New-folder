@@ -5,6 +5,7 @@ export interface IPlannerHeader extends CommonFields {
     plannerName:string;
 }
 export interface IPlannerDetail extends CommonFields{
+    tempId:number;
     id:number;
     headerId:number;
     name:string;
@@ -26,6 +27,7 @@ export interface CommonFields{
     deletedDatetime: Date;
 }
 export const dummyObject = {
+    tempId:0,
     id: 1,
     headerId: 1,
     name: 'Dummy Name',

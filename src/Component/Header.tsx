@@ -29,7 +29,7 @@ const Header = () => {
   <div>
  <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar style={{minHeight:5,color:"#043BAC"}}>
+        <Toolbar style={{minHeight:5,backgroundColor:"#004ed6"}}>
           <Box>
           <IconButton
            size="large"

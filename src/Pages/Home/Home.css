@@ -3,3 +3,12 @@
     width: 25%;
     margin-top: 6px;
   }
+  .initial{
+    text-align:"left";
+  }
+  .pageAlign{
+    display: 'flex';
+    align-items: 'center';
+    justify-content: 'flex-start';
+    margin-left: 80;
+  }
