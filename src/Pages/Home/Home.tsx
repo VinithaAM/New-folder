@@ -13,6 +13,7 @@ const Home = () => {
   const [pageLoad, setPageLoad] = useState(true);
   const [plannerItem, setPlannerItem] = useState<IPlannerDetail[]>([]);
   const [dummyObjectCount, setDummyObjectCount] = useState(1);
+  const [uniqueItems,setUniqueItems]=useState<any>([])
   const handleClick = async () => {
     await handleAddDummyObject();
     setPageLoad(false);
@@ -27,7 +28,7 @@ const Home = () => {
     const dummyObjects = [];
     for (let i = 0; i < count; i++) {
       const dummyObject = {
-        tempId: count,
+        tempId: i + 1,
         id: 0,
         headerId: 0,
         name: "Dummy Name",
@@ -48,10 +49,26 @@ const Home = () => {
       };
       dummyObjects.push(dummyObject);
     }
-    setPlannerItem([
-      ...plannerItem,
-      dummyObject
-    ])
+    setPlannerItem(dummyObjects)
+    // const combinedItems = [...plannerItem, ...dummyObjects];
+    // console.log("plan", combinedItems.length);
+    // if (combinedItems.length > 1) {
+    //   const Items = Array.from(
+    //     new Set(combinedItems.map((item) => item.tempId))
+    //   ).map((id) => combinedItems.find((item) => item.tempId === id));
+    //   console.log("aaaaaa");
+    //   setUniqueItems(Items);
+    // } else {
+    //   const newArray = uniqueItems.concat(dummyObjects);
+    //   setUniqueItems(newArray);
+    //   console.log("bbbbbb", uniqueItems, dummyObjects, newArray);
+    // }
+    // if (uniqueItems !== undefined) {
+    //   setPlannerItem(uniqueItems);
+    // } else {
+    //   setPlannerItem([...dummyObjects]);
+    // }
+
     return dummyObjects;
   };
   const handleCancelFunction = () => {

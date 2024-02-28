@@ -87,7 +87,7 @@ const Header = () => {
             />
           </Search> */}
           <Box sx={{ flexGrow: 1 }} >
-          <img src={logo} style={{width:45,height:25}} alt="logo" />
+          <img src={logo} style={{width:45,height:25,marginLeft:580}} alt="logo" />
          </Box>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             {/* <IconButton size="large" aria-label="show 4 new mails" color="inherit">

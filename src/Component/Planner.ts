@@ -1,6 +1,6 @@
 import DateTime from "react-datetime";
 
-export interface IPlannerHeader extends CommonFields {
+export interface IPlannerHeader extends CommonFields,IPlannerDetail {
     id:number;
     plannerName:string;
 }
@@ -28,8 +28,8 @@ export interface CommonFields{
 }
 export const dummyObject = {
     tempId:0,
-    id: 1,
-    headerId: 1,
+    id: 0,
+    headerId: 0,
     name: 'Dummy Name',
     schedulingLeadtime: 10,
     attendantSheet: 2,

@@ -1,136 +1,43 @@
-import {
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  TextField,
-} from "@mui/material";
-import { useState } from "react";
-
+import { Box, Grid, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import React,{useState} from "react";
+import { Acuity, AllowMultiple, AttendantSheet, IPlannerItemProps, ParallerPickUp, ServicedBy, stretchers } from "./types";
+import TextField from '@mui/material/TextField';
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { IPlannerDetail } from "./Planner";
-import { DndContext, closestCorners } from "@dnd-kit/core";
-import { useSortable } from "@dnd-kit/sortable";
-import CloseIcon from '@mui/icons-material/Close';
 
-// import Drawer from '@mui/material/Drawer';
-// import List from '@mui/material/List';
-// import ListItem from '@mui/material/ListItem';
-// import ListItemText from '@mui/material/ListItemText';
-// import Divider from '@mui/material/Divider';
+const PlannerItem = ({ handleEditPlanner, plannerItem }: IPlannerItemProps) => {
+    const [acuity, setAcuity] = useState<string[]>([]);
+    const[name,setName]=useState('')
+    const [scheduleLeadTime, setSchesuleLeadTime] = useState();
 
-interface componentNameProps {
-  plannerItem: IPlannerDetail;
-}
-const NewPlanner: React.FC<{
-  plannerItem: IPlannerDetail;
-  setPlannerItem: any;
-}> = ({ plannerItem, setPlannerItem }) => {
-  const tempId = plannerItem.tempId;
-  const sortableProps = useSortable({ id: plannerItem.tempId });
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    sortableProps;
-  console.log("newplanner",plannerItem)
-  const [name, setName] = useState("");
-  const [scheduleLeadTime, setSchesuleLeadTime] = useState();
-  const [attendentSeat, setAttendentSeat] = useState("");
-  const [stretchers, setStretchers] = useState("");
-  const [isMultiLoad, setIsMultiLoad] = useState("");
-  const [acuity, setAcuity] = useState<string[]>([]);
-  const [servicedBy, setServicedBy] = useState("");
-  const [parallelPickups, setParallelPickups] = useState("");
-  const [tasks, setTasks] = useState([plannerItem]);
-
-  const handleAcuityChange = (event: SelectChangeEvent<typeof acuity>) => {
-    const {
-      target: { value },
-    } = event;
-    setAcuity(typeof value === "string" ? value.split(",") : value);
-    console.log(acuity);
-  };
-
-  const handleAttendentChange = (event: SelectChangeEvent) => {
-    setAttendentSeat(event.target.value);
-    console.log(event.target.value);
-    //plannerItem.attendantSheet = parseInt(event.target.value);
-  };
-  const handleStretchersChange = (event: SelectChangeEvent) => {
-    setStretchers(event.target.value);
-    //plannerItem.stretchers = parseInt(event.target.value);
-  };
-  const handleServicedByChange = (event: SelectChangeEvent) => {
-    setServicedBy(event.target.value);
-    //plannerItem.servicedBy = event.target.value;
-  };
-  const handleParallelPickup = (event: SelectChangeEvent) => {
-    setParallelPickups(event.target.value);
-    //plannerItem.isParalllelPickup = parseInt(event.target.value);
-  };
-  const handleMultiLoadChange = (event: SelectChangeEvent) => {
-    setIsMultiLoad(event.target.value);
-    if (event.target.value == "Yes") {
-      //plannerItem.isMultiLoad = true;
-    } else {
-      //plannerItem.isMultiLoad = false;
-    }
-  };
-  const handleNameChange = (event: any) => {
-    const value = event.target.value;
-    const regex = /^[a-zA-Z]*$/;
-    if (regex.test(value)) {
-      setName(value);
-      //plannerItem.name = value;
-    }
-  };
-  const handleScheduleTime = (event: any) => {
-    const value = event.target.value;
-    const regex = /^[0-9]*$/;
-    if (regex.test(value)) {
-      const length = value.slice(0, 5);
-      setSchesuleLeadTime(length);
-      //plannerItem.schedulingLeadtime = length;
-    }
-  };
-  const generateValueObject = () => {
-    const Objects = [];
-      console.log("planerItem",plannerItem)
-    const dummyObject = {
-      tempId: plannerItem.tempId,
-      id: 0,
-      headerId: 0,
-      name: name,
-      schedulingLeadtime: scheduleLeadTime,
-      attendantSheet: attendentSeat,
-      stretchers: stretchers,
-      acuity: acuity,
-      isMultiLoad: isMultiLoad ==="Yes"?true:false,
-      servicedBy: servicedBy,
-      isParalllelPickup: parallelPickups,
-      sequence: plannerItem.sequence,
-      createdBy: 1,
-      createdDatetime: new Date(),
-      modifiedBy: 1,
-      modifiedDatetime: new Date(),
-      deletedBy: 1,
-      deletedDatetime: new Date(),
-    };
-    Objects.push(dummyObject);
-
-    setPlannerItem(Objects)
-    console.log("planerItem",plannerItem)
-  };
+    const handleAcuityChange = (event: SelectChangeEvent<typeof acuity>) => {
+        const {
+          target: { value },
+        } = event;
+        setAcuity(typeof value === "string" ? value.split(",") : value);
+        console.log(acuity);
+      };
+      const handleNameChange = (event: any) => {
+        const value = event.target.value;
+        const regex = /^[a-zA-Z]*$/;
+        if (regex.test(value)) {
+          setName(value);
+          //plannerItem.name = value;
+        }
+      };
+      const handleScheduleTime = (event: any) => {
+        const value = event.target.value;
+        const regex = /^[0-9]*$/;
+        if (regex.test(value)) {
+          const length = value.slice(0, 5);
+          setSchesuleLeadTime(length);
+          //plannerItem.schedulingLeadtime = length;
+        }
+      };
   return (
-    <div ref={setNodeRef} {...attributes} {...listeners}>
-      <DndContext collisionDetection={closestCorners}></DndContext>
-     
-      <div style={{ borderLeft: "50px solid #004ed6",marginLeft:80 }}>
-      {/* <span>
-        <CloseIcon  />
-        </span> */}
-        
-        <Grid container alignItems="center" spacing={0.5} marginTop={5} marginBottom={2} >  
+    
+        <div style={{ borderLeft: "30px solid #004ed6",marginLeft:80,marginTop:10 }}>
+            <Grid container alignItems="center" spacing={1} marginTop={5} marginBottom={2} >  
             <Grid item xs={6}>
               <InputLabel
                 style={{
@@ -152,17 +59,20 @@ const NewPlanner: React.FC<{
               <TextField
                 style={{
                   width: 500,
-                  height: 30,
+                  height: 10,
                   backgroundColor: "#F6F6F6",
                   borderBlockWidth: 1,
                   borderRadius: 5,
+                  marginBottom:1
                 }}
-                InputLabelProps={{
-                  shrink: true,
-                }}
+                size="small"
                 type="text"
-                onChange={handleNameChange}
+                onChange={(e) =>
+                    handleEditPlanner("name", name, plannerItem.tempId)
+                  }
+                name="name"
                 value={name}
+                onInput={handleNameChange}
               />
             </Grid>
           
@@ -184,20 +94,28 @@ const NewPlanner: React.FC<{
           <Grid item xs={6}>
             <TextField
               style={{
-                width: 30,
+                width: 500,
                 height: 10,
                 backgroundColor: "#F6F6F6",
-                textAlign: "right",
+                textAlign: "left",
                 borderBlockWidth: 1,
                 borderRadius: 5,
+                marginTop:10,
+                marginBottom:10
+                
               }}
+              size="small"
               type="number"
-             
+              id="inputPassword5"
               placeholder="Minutes"
-              label="Minutes"
               aria-placeholder="right"
-              value={scheduleLeadTime}
-              onChange={handleScheduleTime}
+              name="scheduleLeadTime"
+              aria-label="Minutes"
+              label="Minutes"
+            //   value={scheduleLeadTime}
+              onChange={(e) =>
+                handleEditPlanner("schedulingLeadtime", e.target.value, plannerItem.tempId)
+              }
               
             />
           </Grid>
@@ -223,18 +141,18 @@ const NewPlanner: React.FC<{
                 height: 30,
                 backgroundColor: "#F6F6F6",
                 textAlign: "left",
+                marginTop:15
               }}
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={attendentSeat}
-              onChange={handleAttendentChange}
+              name="attendentSeat"
+              onChange={(e) =>
+                handleEditPlanner("attendantSheet", e.target.value, plannerItem.tempId)
+              }
             >
-              <MenuItem value={0}>0</MenuItem>
-              <MenuItem value={1}>1</MenuItem>
-              <MenuItem value={2}>2</MenuItem>
-              <MenuItem value={3}>3</MenuItem>
-              <MenuItem value={4}>4</MenuItem>
-              <MenuItem value={5}>5</MenuItem>
+                {AttendantSheet.map((item,index)=>(
+                    <MenuItem key={index} value={item.name}>{item.name}</MenuItem>
+                ))}
             </Select>
           </Grid>
           <Grid item xs={6}>
@@ -259,18 +177,19 @@ const NewPlanner: React.FC<{
                 height: 30,
                 backgroundColor: "#F6F6F6",
                 textAlign: "left",
+                
               }}
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={stretchers}
-              label="Stretchers"
-              onChange={handleStretchersChange}
+              name="stretchers"
+              
+              onChange={(e) =>
+                handleEditPlanner("stretchers", e.target.value, plannerItem.tempId)
+              }
             >
-              <MenuItem value={0}>0</MenuItem>
-              <MenuItem value={1}>1</MenuItem>
-              <MenuItem value={2}>2</MenuItem>
-              <MenuItem value={3}>3</MenuItem>
-              <MenuItem value={4}>4</MenuItem>
+                 {stretchers.map((item,index)=>(
+                    <MenuItem key={index} value={item.name}>{item.name}</MenuItem>
+                ))}
             </Select>
           </Grid>
           <Grid item xs={6}>
@@ -299,22 +218,24 @@ const NewPlanner: React.FC<{
               labelId="demo-multiple-name-label"
               id="demo-multiple-name"
               multiple
+              name="acuity"
               value={acuity}
               input={<OutlinedInput label="Name" />}
-              onChange={handleAcuityChange}
+              onChange={
+                handleAcuityChange
+              }
+              onClick={(e) =>
+                handleEditPlanner("acuity", (acuity.toString()), plannerItem.tempId)}
             >
-              <MenuItem value={"A"}>A</MenuItem>
-              <MenuItem value={"B"}>B</MenuItem>
-              <MenuItem value={"C"}>C</MenuItem>
-              <MenuItem value={"D"}>D</MenuItem>
-              <MenuItem value={"E"}>E</MenuItem>
-              <MenuItem value={"F"}>F</MenuItem>
-              <MenuItem value={"G"}>G</MenuItem>
-              <MenuItem value={"H"}>H</MenuItem>
-              <MenuItem value={"I"}>I</MenuItem>
-              <MenuItem value={"J"}>J</MenuItem>
-              <MenuItem value={"K"}>K</MenuItem>
-              <MenuItem value={"L"}>L</MenuItem>
+                 {Acuity.map((name,index) => (
+            <MenuItem
+              key={index}
+              value={name.name}
+            >
+              {name.name}
+            </MenuItem>
+          ))}
+             
             </Select>
           </Grid>
           <Grid item xs={6}>
@@ -342,12 +263,15 @@ const NewPlanner: React.FC<{
               }}
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={isMultiLoad}
+              name="isMultiLoad"
               label="MultiLoad Allowed"
-              onChange={handleMultiLoadChange}
+              onChange={(e) =>
+                handleEditPlanner("isMultiLoad", (e.target.value), plannerItem.tempId)
+              }
             >
-              <MenuItem value={"Yes"}>Yes</MenuItem>
-              <MenuItem value={"No"}>No</MenuItem>
+                {AllowMultiple.map((item, index) => (
+        <MenuItem key={index} value={item.name}>{item.name}</MenuItem>
+      ))}
             </Select>
           </Grid>
           <Grid item xs={6}>
@@ -375,12 +299,15 @@ const NewPlanner: React.FC<{
               }}
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={servicedBy}
+              name="servicedBy"
               label="ServicedBy"
-              onChange={handleServicedByChange}
+              onChange={(e) =>
+                handleEditPlanner("servicedBy", (e.target.value), plannerItem.tempId)
+              }
             >
-              <MenuItem value={"Customer Feet"}>Customer Feet</MenuItem>
-              <MenuItem value={"SMA Feet"}>SMA Feet</MenuItem>
+              {ServicedBy.map((item, index) => (
+        <MenuItem key={index} value={item.name}>{item.name}</MenuItem>
+      ))}
             </Select>
           </Grid>
           <Grid item xs={6}>
@@ -406,22 +333,41 @@ const NewPlanner: React.FC<{
                 backgroundColor: "#F6F6F6",
                 textAlign: "left",
               }}
+              name="isParalllelPickup"
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={parallelPickups}
+             
               label="Parallel Pickups"
-              onChange={handleParallelPickup}
+              onChange={(e) =>
+                handleEditPlanner("isParalllelPickup", (e.target.value), plannerItem.tempId)
+              }
             >
-              <MenuItem value={1}>1</MenuItem>
-              <MenuItem value={2}>2</MenuItem>
-              <MenuItem value={3}>3</MenuItem>
-              <MenuItem value={4}>4</MenuItem>
+                {ParallerPickUp.map((item,index)=>(
+                    <MenuItem key={index} value={item.name}>{item.name}</MenuItem>
+                ))}
             </Select>
           </Grid>
+         
         </Grid>
-      </div>
-    </div>
+        </div>
+   
   );
 };
 
-export default NewPlanner;
+export default PlannerItem;
+
+
+{/* <input
+name={"name"}
+value={plannerItem.name}
+onChange={(e) =>
+  handleEditPlanner("name", e.target.value, plannerItem.id)
+}
+/>
+<input
+name={"age"}
+value={plannerItem.name}
+onChange={(e) =>
+  handleEditPlanner("acuity", e.target.value, plannerItem.id)
+}
+/> */}

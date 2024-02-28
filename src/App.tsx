@@ -1,11 +1,10 @@
 
 import './App.css';
-
-import Sidebar from './Pages/Sidebar';
+import Layout from './Layout';
 
 function App() {
   return (
-    <Sidebar></Sidebar>
+    <Layout/>
   );
 }
 
