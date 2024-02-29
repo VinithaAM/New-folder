@@ -9,8 +9,9 @@ export interface IPlannerState {
 
 export interface IPlannerItemProps {
 
-    handleEditPlanner:(name:keyof IPlannerDetail, value:any, id:number)=>void; 
+    handleEditPlanner:(name:keyof IPlannerDetail, value:any, id:number)=>void
     plannerItem:IPlannerDetail
+    key:number
 }
 export const ServicedBy = [
   {

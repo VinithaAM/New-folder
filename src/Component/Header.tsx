@@ -29,7 +29,7 @@ const Header = () => {
   <div>
  <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar style={{minHeight:5,backgroundColor:"#004ed6"}}>
+        <Toolbar style={{minHeight:5,backgroundColor:"#0049A3"}}>
           <Box>
           <IconButton
            size="large"
@@ -37,7 +37,8 @@ const Header = () => {
            aria-controls="menu-appbar"
            aria-haspopup="true"
             edge="start"
-            color="error"
+            // color="error"
+            style={{color:"#ffffff"}}
             sx={{ mr: 1 }}
             onClick={handleOpenUserMenu}
           >
@@ -111,7 +112,8 @@ const Header = () => {
             //   aria-controls={menuId}
             //   aria-haspopup="true"
             //   onClick={handleProfileMenuOpen}
-              color="error"
+              //color="error"
+              style={{color:"#ffffff"}}
             >
               <AccountCircle />
             </IconButton>

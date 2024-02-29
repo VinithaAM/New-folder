@@ -1,4 +1,4 @@
-import { Box, Button, Stack } from "@mui/material";
+import { Box, Button, IconButton, Stack } from "@mui/material";
 import React, { useState } from "react";
 import { IPlannerState } from "./types";
 import PlannerItem from "./PlannerItem";
@@ -6,6 +6,10 @@ import AddPlanner from "../AddPlanner/AddPlanner";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { IPlannerDetail, IPlannerHeader, dummyObject } from "../../Component/Planner";
 import { createNewPlanner } from "../../Services/Planner";
+import { SortableContext, arrayMove, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { DndContext, KeyboardSensor, PointerSensor, TouchSensor, closestCorners, useSensor, useSensors } from "@dnd-kit/core";
+import CloseIcon from '@mui/icons-material/Close';
+import MenuIcon from '@mui/icons-material/Menu';
 
 const plannerState = {
   name: "",
@@ -15,11 +19,11 @@ const plannerState = {
 
 const Planner = () => {
   const [planner, setPlanner] = useState<IPlannerDetail[]>([]);
-  const [pageLoad, setPageLoad] = useState(true);
+  const [pageLoad, setPageLoad] = useState(false);
   const [seqCount,setCount]=useState(0)
 
   const handleAddNewPlanner = () => {
-    setPageLoad(false)
+    setPageLoad(true)
     setPlanner([
       ...planner,
       { ...dummyObject, tempId: Math.floor(Math.random() * 100),sequence:seqCount+1 },
@@ -43,13 +47,8 @@ const Planner = () => {
     });
   };
   const handleCancelFunction = () => {
-    // const newArray = [...plannerItem];
-    // const removedItem = newArray.pop();
-    // setPlannerItem([]);
-    // setDummyObjectCount(1);
-
+    setPlanner([]);
     setPageLoad(true);
-    // console.log(plannerItem);
   };
   const handleSaveFunction = () => {
  
@@ -72,10 +71,39 @@ const Planner = () => {
         console.log(error)
     })
   };
+  const getPostion=(id:any)=>planner.findIndex(x=>x.tempId==id)
+  const handleDrag=(event:any)=>{
+    const {active,over}=event
+    if(active.tempId==over.tempId)return
+    setPlanner(planner=>{
+      const original=getPostion(active.tempId)
+      const newPostion=getPostion(over.tempId)
+      return arrayMove(planner,original,newPostion)
+    })
+  }
+  const sensors=useSensors(
+    useSensor(PointerSensor),
+    useSensor(TouchSensor),
+    useSensor(KeyboardSensor,{
+      coordinateGetter : sortableKeyboardCoordinates,
+    })
+  );
+  const handleRemoveItem = (id: number) => {
+    // console.log(id)
+    setPageLoad(false)
+    const indexToRemove = planner.findIndex(item => item.tempId === id);
+    console.log(indexToRemove)
+    if (indexToRemove !== -1) {
+      planner.splice(indexToRemove, 1);
+    }
+    setPlanner(planner)
+    setPageLoad(true)
+    console.log(planner)
+  }
   return (
     <Stack spacing={3}>
           <div>
-        {pageLoad ? (
+       
           <>
             <h3
               style={{
@@ -102,18 +130,49 @@ const Planner = () => {
               </p>
             </span>
           </>
-        ) : (
+       {pageLoad && (
+          <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDrag}>
             <div>
+             
             {planner.map((item) => {
                 return (
+                  <SortableContext items={planner} strategy={verticalListSortingStrategy}>
+                    <>
+                     <IconButton
+           size="large"
+           aria-label="account of current user"
+           aria-controls="menu-appbar"
+           aria-haspopup="true"
+            edge="end"
+            style={{color:"blue"}}
+            sx={{ mr: 1 }}
+            onClick={()=>handleRemoveItem(item.tempId)}
+          >
+            <CloseIcon />
+          </IconButton>
+          <IconButton
+           size="large"
+           aria-label="account of current user"
+           aria-controls="menu-appbar"
+           aria-haspopup="true"
+            edge="start"
+            style={{color:"blue"}}
+            sx={{ mr: 1 }}
+          >
+            <MenuIcon />
+          </IconButton>
                 <PlannerItem
                     key={item.id}
                     plannerItem={item}
                     handleEditPlanner={handleEditPlanner}
                 />
+                </>
+                 </SortableContext>
                 );
             })}
+           
           </div>
+          </DndContext>
         )}
         <div
           style={{
@@ -131,7 +190,7 @@ const Planner = () => {
           </span>
           <span
             style={{
-              color: "#004ed6",
+              color: "#0049A3",
               fontSize: 15,
               fontWeight: "600",
               margin: 10,
@@ -153,7 +212,7 @@ const Planner = () => {
         >
           <Button
             variant="contained"
-            style={{ margin: 8, padding: 5, backgroundColor: "#004ed6" }}
+            style={{ margin: 8, padding: 5, backgroundColor: "#0049A3" }}
            onClick={handleSaveFunction}
           >
             <span style={{ color: "white", fontWeight: "bold" }}>Save</span>

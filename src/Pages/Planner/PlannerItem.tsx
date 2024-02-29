@@ -1,44 +1,59 @@
-import { Box, Grid, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
-import React,{useState} from "react";
+import { Box, Grid, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import React, { useState } from "react";
 import { Acuity, AllowMultiple, AttendantSheet, IPlannerItemProps, ParallerPickUp, ServicedBy, stretchers } from "./types";
 import TextField from '@mui/material/TextField';
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
+import CloseIcon from '@mui/icons-material/Close';
+import MenuIcon from '@mui/icons-material/Menu';
 
-const PlannerItem = ({ handleEditPlanner, plannerItem }: IPlannerItemProps) => {
-    const [acuity, setAcuity] = useState<string[]>([]);
-    const[name,setName]=useState('')
-    const [scheduleLeadTime, setSchesuleLeadTime] = useState();
+const PlannerItem = ({ handleEditPlanner, plannerItem, key }: IPlannerItemProps) => {
+  const { attributes, transform, transition, listeners, setNodeRef } = useSortable({ id: key })
+  const [acuity, setAcuity] = useState<string[]>([]);
+  const [name, setName] = useState('')
+  const [scheduleLeadTime, setSchesuleLeadTime] = useState();
 
-    const handleAcuityChange = (event: SelectChangeEvent<typeof acuity>) => {
-        const {
-          target: { value },
-        } = event;
-        setAcuity(typeof value === "string" ? value.split(",") : value);
-        console.log(acuity);
-      };
-      const handleNameChange = (event: any) => {
-        const value = event.target.value;
-        const regex = /^[a-zA-Z]*$/;
-        if (regex.test(value)) {
-          setName(value);
-          //plannerItem.name = value;
-        }
-      };
-      const handleScheduleTime = (event: any) => {
-        const value = event.target.value;
-        const regex = /^[0-9]*$/;
-        if (regex.test(value)) {
-          const length = value.slice(0, 5);
-          setSchesuleLeadTime(length);
-          //plannerItem.schedulingLeadtime = length;
-        }
-      };
+  const handleAcuityChange = (event: SelectChangeEvent<typeof acuity>) => {
+    const {
+      target: { value },
+    } = event;
+    setAcuity(typeof value === "string" ? value.split(",") : value);
+    console.log(acuity);
+  };
+  const handleNameChange = (event: any) => {
+    const value = event.target.value;
+    const regex = /^[a-zA-Z]*$/;
+    if (regex.test(value)) {
+      setName(value);
+      //plannerItem.name = value;
+    }
+  };
+  const handleScheduleTime = (event: any) => {
+    const value = event.target.value;
+    const regex = /^[0-9]*$/;
+    if (regex.test(value)) {
+      const length = value.slice(0, 5);
+      setSchesuleLeadTime(length);
+      //plannerItem.schedulingLeadtime = length;
+    }
+  };
+
+  
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform)
+  }
   return (
-    
-        <div style={{ borderLeft: "30px solid #004ed6",marginLeft:80,marginTop:10 }}>
-            <Grid container alignItems="center" spacing={1} marginTop={5} marginBottom={2} >  
-            <Grid item xs={6}>
+    <Box>
+       
+      <div ref={setNodeRef}{...listeners}{...attributes} style={style}>
+        <div style={{ borderLeft: "30px solid #0049A3", marginLeft: 80,marginRight:60, marginTop: 10,borderTop:"3px solid #000000",borderBottom:"1px solid #000000",borderRight:"1px solid #000000"}}>
+          <Grid container alignItems="center" spacing={1}  marginBottom={2} lineHeight={1}>
+           
+
+          <Grid item xs={6}>
               <InputLabel
                 style={{
                   color: "#040404",
@@ -55,12 +70,12 @@ const PlannerItem = ({ handleEditPlanner, plannerItem }: IPlannerItemProps) => {
             </Grid>
          
          
-            <Grid item xs={6}>
+            <Grid item xs={6} >
               <TextField
                 style={{
-                  width: 500,
-                  height: 10,
-                  backgroundColor: "#F6F6F6",
+                  width: "100%",
+                height: 2,
+                 backgroundColor: "#EEEFE9",
                   borderBlockWidth: 1,
                   borderRadius: 5,
                   marginBottom:1
@@ -94,14 +109,14 @@ const PlannerItem = ({ handleEditPlanner, plannerItem }: IPlannerItemProps) => {
           <Grid item xs={6}>
             <TextField
               style={{
-                width: 500,
-                height: 10,
-                backgroundColor: "#F6F6F6",
+                width: "100%",
+                height: 2,
+                 backgroundColor: "#EEEFE9",
                 textAlign: "left",
                 borderBlockWidth: 1,
                 borderRadius: 5,
                 marginTop:10,
-                marginBottom:10
+                marginBottom:15
                 
               }}
               size="small"
@@ -137,9 +152,9 @@ const PlannerItem = ({ handleEditPlanner, plannerItem }: IPlannerItemProps) => {
           <Grid item xs={6}>
             <Select
               style={{
-                width: 500,
+                width: "100%",
                 height: 30,
-                backgroundColor: "#F6F6F6",
+                 backgroundColor: "#EEEFE9",
                 textAlign: "left",
                 marginTop:15
               }}
@@ -173,9 +188,9 @@ const PlannerItem = ({ handleEditPlanner, plannerItem }: IPlannerItemProps) => {
           <Grid item xs={6}>
             <Select
               style={{
-                width: 500,
+                width: "100%",
                 height: 30,
-                backgroundColor: "#F6F6F6",
+                 backgroundColor: "#EEEFE9",
                 textAlign: "left",
                 
               }}
@@ -210,9 +225,9 @@ const PlannerItem = ({ handleEditPlanner, plannerItem }: IPlannerItemProps) => {
           <Grid item xs={6}>
             <Select
               style={{
-                width: 500,
+                width: "100%",
                 height: 30,
-                backgroundColor: "#F6F6F6",
+                 backgroundColor: "#EEEFE9",
                 textAlign: "left",
               }}
               labelId="demo-multiple-name-label"
@@ -256,9 +271,9 @@ const PlannerItem = ({ handleEditPlanner, plannerItem }: IPlannerItemProps) => {
           <Grid item xs={6}>
             <Select
               style={{
-                width: 500,
+                width: "100%",
                 height: 30,
-                backgroundColor: "#F6F6F6",
+               backgroundColor: "#EEEFE9",
                 textAlign: "left",
               }}
               labelId="demo-simple-select-label"
@@ -292,9 +307,9 @@ const PlannerItem = ({ handleEditPlanner, plannerItem }: IPlannerItemProps) => {
           <Grid item xs={6}>
             <Select
               style={{
-                width: 500,
+                width: "100%",
                 height: 30,
-                backgroundColor: "#F6F6F6",
+                 backgroundColor: "#EEEFE9",
                 textAlign: "left",
               }}
               labelId="demo-simple-select-label"
@@ -328,9 +343,9 @@ const PlannerItem = ({ handleEditPlanner, plannerItem }: IPlannerItemProps) => {
           <Grid item xs={6}>
             <Select
               style={{
-                width: 500,
+                width: "100%",
                 height: 30,
-                backgroundColor: "#F6F6F6",
+                 backgroundColor: "#EEEFE9",
                 textAlign: "left",
               }}
               name="isParalllelPickup"
@@ -348,9 +363,14 @@ const PlannerItem = ({ handleEditPlanner, plannerItem }: IPlannerItemProps) => {
             </Select>
           </Grid>
          
-        </Grid>
+
+        
+       
+
+          </Grid>
         </div>
-   
+      </div>
+    </Box>
   );
 };
 

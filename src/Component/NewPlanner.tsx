@@ -126,7 +126,7 @@ const NewPlanner: React.FC<{
     <div >
       <DndContext collisionDetection={closestCorners}></DndContext>
      
-      <div style={{ borderLeft: "50px solid #004ed6",marginLeft:80 }}>
+      <div style={{ borderLeft: "50px solid #0049A3",marginLeft:80 }}>
       {/* <span>
         <CloseIcon  />
         </span> */}

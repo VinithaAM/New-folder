@@ -137,7 +137,7 @@ const Home = () => {
           </span>
           <span
             style={{
-              color: "#004ed6",
+              color: "#0049A3",
               fontSize: 15,
               fontWeight: "600",
               margin: 10,
@@ -159,7 +159,7 @@ const Home = () => {
         >
           <Button
             variant="contained"
-            style={{ margin: 8, padding: 5, backgroundColor: "#004ed6" }}
+            style={{ margin: 8, padding: 5, backgroundColor: "#0049A3" }}
             onClick={handleSaveFunction}
           >
             <span style={{ color: "white", fontWeight: "bold" }}>Save</span>
