@@ -73,7 +73,7 @@ const PlannerItem = ({
     <div ref={setNodeRef}  style={style} >
       <div>
         <Box display="flex">
-          <Box {...attributes}{...listeners}
+          <Box 
             display="flex"
             flexDirection={"column"}
             justifyContent={"space-between"}
@@ -89,7 +89,7 @@ const PlannerItem = ({
               </IconButton>
             </div>
             <div style={{ flex: 1 }}>
-              <IconButton color="warning" >
+              <IconButton color="warning" {...attributes}{...listeners}>
                 <MenuIcon />
               </IconButton>
             </div>
