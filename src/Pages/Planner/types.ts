@@ -11,7 +11,14 @@ export interface IPlannerItemProps {
 
     handleEditPlanner:(name:keyof IPlannerDetail, value:any, id:number)=>void
     plannerItem:IPlannerDetail
-    key:number
+    tempId:number
+    handleRemoveItem:(id:number)=>void
+}
+export interface IPlannerProps {
+
+    planner:any
+    handleEditPlanner:(name:keyof IPlannerDetail, value:any, id:number)=>void
+    handleRemoveItem:(id:number)=>void
 }
 export const ServicedBy = [
   {

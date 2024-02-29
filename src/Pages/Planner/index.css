@@ -1,0 +1,31 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .nav {
+    background-color: red;
+    flex: 1
+  }
+  
+  .main {
+    background-color: blue;
+    flex: 1
+  }
+  .task{
+    background-color: wheat;
+    border-radius: 5%;
+    box-shadow: rgba(0,0,0,0.16)0px 1px 4px;
+    width:100%;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+    touch-action: none;
+}
+.icon{
+    margin-left: 10;
+     width: 15;
+     color: "#217AC0"
+}

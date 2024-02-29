@@ -36,7 +36,7 @@ const Home = () => {
         attendantSheet: 2,
         stretchers: 1,
         acuity: "A",
-        isMultiLoad: true,
+        isMultiLoad: "true",
         servicedBy: "Customer Feet",
         isParalllelPickup: 1,
         sequence: count,
@@ -50,24 +50,6 @@ const Home = () => {
       dummyObjects.push(dummyObject);
     }
     setPlannerItem(dummyObjects)
-    // const combinedItems = [...plannerItem, ...dummyObjects];
-    // console.log("plan", combinedItems.length);
-    // if (combinedItems.length > 1) {
-    //   const Items = Array.from(
-    //     new Set(combinedItems.map((item) => item.tempId))
-    //   ).map((id) => combinedItems.find((item) => item.tempId === id));
-    //   console.log("aaaaaa");
-    //   setUniqueItems(Items);
-    // } else {
-    //   const newArray = uniqueItems.concat(dummyObjects);
-    //   setUniqueItems(newArray);
-    //   console.log("bbbbbb", uniqueItems, dummyObjects, newArray);
-    // }
-    // if (uniqueItems !== undefined) {
-    //   setPlannerItem(uniqueItems);
-    // } else {
-    //   setPlannerItem([...dummyObjects]);
-    // }
 
     return dummyObjects;
   };

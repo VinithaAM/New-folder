@@ -13,7 +13,7 @@ export interface IPlannerDetail extends CommonFields{
     attendantSheet:number;
     stretchers:number;
     acuity:string;
-    isMultiLoad:boolean;
+    isMultiLoad:string;
     servicedBy:string;
     isParalllelPickup:number;
     sequence:number
@@ -30,15 +30,15 @@ export const dummyObject = {
     tempId:0,
     id: 0,
     headerId: 0,
-    name: 'Dummy Name',
-    schedulingLeadtime: 10,
-    attendantSheet: 2,
-    stretchers: 1,
-    acuity: 'A',
-    isMultiLoad: true,
-    servicedBy: 'Customer Feet',
-    isParalllelPickup: 1,
-    sequence: 1,
+    name: '',
+    schedulingLeadtime: 0,
+    attendantSheet: 0,
+    stretchers: 0,
+    acuity: '',
+    isMultiLoad: "",
+    servicedBy: '',
+    isParalllelPickup: 0,
+    sequence: 0,
     createdBy:1,
     createdDatetime:new Date(),
     modifiedBy:1,
