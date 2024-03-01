@@ -1,13 +1,12 @@
+import "./App.css";
+import Layout from "./Layout";
 
-import './App.css';
-import Layout from './Layout';
-import DndStart from './Pages/DND/DndStart';
+import AppFile from "./Component/Text";
 
 function App() {
-  return (
-    <Layout/>
-    // <DndStart />
-  );
+  return   <Layout />;
+ 
+   
 }
 
 export default App;

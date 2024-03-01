@@ -1,22 +1,23 @@
 .wrapper {
     display: flex;
     flex-direction: column;
-  }
-  
-  .nav {
+}
+
+.nav {
     background-color: red;
     flex: 1
-  }
-  
-  .main {
+}
+
+.main {
     background-color: blue;
     flex: 1
-  }
-  .task{
+}
+
+.task {
     background-color: wheat;
     border-radius: 5%;
-    box-shadow: rgba(0,0,0,0.16)0px 1px 4px;
-    width:100%;
+    box-shadow: rgba(0, 0, 0, 0.16)0px 1px 4px;
+    width: 100%;
     padding: 10px;
     display: flex;
     align-items: center;
@@ -24,8 +25,15 @@
     gap: 20px;
     touch-action: none;
 }
-.icon{
+
+.icon {
     margin-left: 10;
-     width: 15;
-     color: "#217AC0"
+    width: 15;
+    color: "#217AC0"
+}
+.input{
+    color: "#040404";
+    font-family: "sans-serif";
+    text-align: "left";
+    margin-left: 5,
 }

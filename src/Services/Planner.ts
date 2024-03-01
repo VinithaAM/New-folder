@@ -1,6 +1,6 @@
 import axios from "axios";
-import { IPlannerHeader } from "../Component/Planner";
+const baseURL="https://localhost:7033/api"
 
-export const createNewPlanner=(savePlanner:any)=>{
-    return axios.post("https://localhost:7033/api/Planner/Create",savePlanner);
-}
+export const createNewPlanner = (savePlanner: any) => {
+  return axios.post(`${baseURL}/Planner/Create`, savePlanner);
+};

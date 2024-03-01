@@ -1,22 +1,9 @@
-import { Alert, Box, Button, Container, IconButton, Stack } from "@mui/material";
-import React, { useState } from "react";
-import { IPlannerState } from "./types";
-import PlannerItem from "./PlannerItem";
-import AddPlanner from "../AddPlanner/AddPlanner";
+import { Button, Stack } from "@mui/material";
+import { useState } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import {
-  IPlannerDetail,
-  IPlannerHeader,
-  dummyObject,
-} from "../../Component/Planner";
+import { IPlannerDetail, dummyObject } from "../../Component/Planner";
 import { createNewPlanner } from "../../Services/Planner";
-import {
-  SortableContext,
-  arrayMove,
-  sortableKeyboardCoordinates,
-  useSortable,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { arrayMove } from "@dnd-kit/sortable";
 import {
   DndContext,
   KeyboardSensor,
@@ -26,18 +13,17 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-
-import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-import Dndstart from "../DND/DndStart";
 import Planners from "./Planners";
+import { Droppable } from "../../Component/Droppable";
+import { Draggable } from "../../Component/Draggable";
 
 const Planner = () => {
-  
   const [planner, setPlanner] = useState<IPlannerDetail[]>([]);
   const [pageLoad, setPageLoad] = useState(false);
   const [seqCount, setCount] = useState(0);
   const [id, setId] = useState(0);
+  const [isDropped, setIsDropped] = useState(false);
 
   const handleAddNewPlanner = () => {
     setPageLoad(true);
@@ -68,8 +54,7 @@ const Planner = () => {
     setPageLoad(true);
   };
   const handleSaveFunction = () => {
-    console.log("new",planner)
-    if(planner.length>0){
+    if (planner.length > 0) {
       const savePlanner = {
         id: 0,
         plannerName: "New Planner",
@@ -83,36 +68,40 @@ const Planner = () => {
             setPlanner([]);
             setPageLoad(true);
             setCount(0);
-            setId(0)
+            setId(0);
           }
         })
         .catch((error) => {
           console.log(error);
         });
+    } else {
+      alert("No item Added");
     }
-    else{
-      
-      alert("No item Added")
-    }
-   
   };
-  const getPostion = (id: any) => planner.findIndex((x) => x.tempId == id);
-  const setSequence= (id:any)=>planner.find((x)=>x.sequence==id)
+  const getPostion = (id: any) => planner.findIndex((x) => x.tempId === id);
+  const setSequence = (id: any) => planner.find((x) => x.sequence === id);
   const handleDrag = (event: any) => {
     const { active, over } = event;
-    if(active?.id !==undefined && over?.id !==undefined && active?.id !==null && over?.id !==null){
-      if (active.id == over.id) return;
+    if (
+      active?.id !== undefined &&
+      over?.id !== undefined &&
+      active?.id !== null &&
+      over?.id !== null
+    ) {
+      if (active.id === over.id) return;
       setPlanner((planner) => {
         const original = getPostion(active.id);
         const newPostion = getPostion(over.id);
-        const sequence =setSequence(over.id)
         return arrayMove(planner, original, newPostion);
       });
     }
+    // if (event.over && event.over.id === 'droppable') {
+    //   setIsDropped(true);
+    // }
   };
   const sensors = useSensors(
     useSensor(PointerSensor),
-    useSensor(TouchSensor),
+    useSensor(TouchSensor)
     // useSensor(KeyboardSensor, {
     //   coordinateGetter: sortableKeyboardCoordinates,
     // })
@@ -121,15 +110,20 @@ const Planner = () => {
     setPlanner((prevPlanner) => {
       const indexToRemove = prevPlanner.findIndex((item) => item.tempId === id);
       if (indexToRemove !== -1) {
-        const newPlanner = [...prevPlanner.slice(0, indexToRemove), ...prevPlanner.slice(indexToRemove + 1)];
+        const newPlanner = [
+          ...prevPlanner.slice(0, indexToRemove),
+          ...prevPlanner.slice(indexToRemove + 1),
+        ];
         return newPlanner;
       }
       return prevPlanner;
     });
   };
-  
+  // const draggableMarkup = (
+  //   <Draggable></Draggable>
+  // );
   return (
-    <Container>
+    <div style={{margin:50,marginLeft:50}}>
       <Stack spacing={2}>
         <div>
           <>
@@ -149,7 +143,7 @@ const Planner = () => {
                 justifyContent: "flex-start",
               }}
             >
-              <p style={{ fontSize: 15, textAlign: "left",color:"gray" }}>
+              <p style={{ fontSize: 15, textAlign: "left", color: "gray" }}>
                 Add Planner to allow customers to schedule their own trips. Each
                 planner represent a virtual vehicle that limits the number and
                 type of transfers that can be scheduled
@@ -157,20 +151,24 @@ const Planner = () => {
             </span>
           </>
           {pageLoad && (
-            // <Dndstart planner={planner}
-            //              handleEditPlanner={handleEditPlanner}
-            //             handleRemoveItem={handleRemoveItem} />
             <>
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCorners}
-              onDragEnd={handleDrag}
-             >
-              <Planners planner={planner}handleEditPlanner={handleEditPlanner}
-              handleRemoveItem={handleRemoveItem}/>
+              <DndContext
+                sensors={sensors}
+                
+                collisionDetection={closestCorners}
+                onDragEnd={handleDrag}
+              >
+                 {/* {!isDropped ? draggableMarkup : null}
+                 <Droppable>
+        {isDropped ? draggableMarkup : 'Drop here'}
+      </Droppable> */}
+                <Planners
+                  planner={planner}
+                  handleEditPlanner={handleEditPlanner}
+                  handleRemoveItem={handleRemoveItem}
+                />
               </DndContext>
-              </>
-           
+            </>
           )}
           <div
             style={{
@@ -184,6 +182,7 @@ const Planner = () => {
               color="primary"
               startIcon={<AddCircleOutlineIcon />}
               onClick={handleAddNewPlanner}
+              style={{textTransform:"capitalize"}}
             >
               Add New Planner
             </Button>
@@ -194,29 +193,38 @@ const Planner = () => {
               display: "flex",
               alignItems: "center",
               justifyContent: "flex-start",
+              marginTop:10
             }}
           >
-            <Button color="primary"
+            <Button
+              color="primary"
               variant="contained"
-              style={{ margin: 8, padding: 5,width:"12%" }}
+              style={{ margin: 8, padding: 5, width: "12%" ,textTransform:"capitalize"}}
               onClick={handleSaveFunction}
-             
             >
-              <span style={{ color: "white", fontWeight: "100%",fontFamily:"sans-serif" }}>Save</span>
+              <span
+                style={{
+                  color: "white",
+                  fontWeight: "100%",
+                  fontFamily: "sans-serif",
+                }}
+              >
+                Save
+              </span>
             </Button>
 
             <Button
               variant="contained"
-              style={{ margin: 8, padding: 5,width:"12%" }}
+              style={{ margin: 8, padding: 5, width: "12%",textTransform:"capitalize" }}
               color="inherit"
               onClick={handleCancelFunction}
             >
-              <span style={{ color: "black", fontWeight: "bold" }}>Cancel</span>{" "}
+              <span style={{ color: "black", fontWeight: "bold" }}>Cancel</span>
             </Button>
           </div>
         </div>
       </Stack>
-    </Container>
+      </div>
   );
 };
 

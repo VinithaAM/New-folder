@@ -1,14 +1,17 @@
 import {
   Box,
+  Checkbox,
   Grid,
   IconButton,
+  InputAdornment,
   InputLabel,
+  ListItem,
   MenuItem,
   Select,
   SelectChangeEvent,
-  Stack,
 } from "@mui/material";
-import React, { useState } from "react";
+import ListItemText from '@mui/material/ListItemText';
+import { useState } from "react";
 import {
   Acuity,
   AllowMultiple,
@@ -26,7 +29,7 @@ import { CSS } from "@dnd-kit/utilities";
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
 import "./index.css";
-
+import { useDraggable } from "@dnd-kit/core";
 
 const PlannerItem = ({
   handleRemoveItem,
@@ -34,15 +37,13 @@ const PlannerItem = ({
   plannerItem,
   tempId,
 }: IPlannerItemProps) => {
-  const { attributes, transform, transition, listeners, setNodeRef } =
+  const { attributes, transform, listeners, setNodeRef } =
   useSortable({ id: tempId });
   const style = {
-    transition,
     transform: CSS.Transform.toString(transform),
   };
   const [acuity, setAcuity] = useState<string[]>([]);
   const [name, setName] = useState("");
-  const [scheduleLeadTime, setSchesuleLeadTime] = useState();
 
   const handleAcuityChange = (event: SelectChangeEvent<typeof acuity>) => {
     const {
@@ -56,56 +57,47 @@ const PlannerItem = ({
     const regex = /^[a-zA-Z]*$/;
     if (regex.test(value)) {
       setName(value);
-      //plannerItem.name = value;
     }
   };
-  const handleScheduleTime = (event: any) => {
-    const value = event.target.value;
-    const regex = /^[0-9]*$/;
-    if (regex.test(value)) {
-      const length = value.slice(0, 5);
-      setSchesuleLeadTime(length);
-      //plannerItem.schedulingLeadtime = length;
-    }
-  };
-
+ 
   return (
-    <div ref={setNodeRef}  style={style} >
+    <div draggable ref={setNodeRef} style={style}>
       <div>
         <Box display="flex">
-          <Box 
+          <Box
             display="flex"
             flexDirection={"column"}
             justifyContent={"space-between"}
-            bgcolor={'primary.main'}
-            maxWidth={'40px'}
+            bgcolor={"primary.main"}
+            maxWidth={"40px"}
           >
             <div style={{ flex: 1 }}>
-              <IconButton color="warning" onClick=
-              {(e) =>
-                handleRemoveItem(plannerItem.tempId)
-              }>
+              <IconButton
+                color="warning"
+                onClick={(e) => handleRemoveItem(plannerItem.tempId)}
+              >
                 <CloseIcon />
               </IconButton>
             </div>
             <div style={{ flex: 1 }}>
-              <IconButton color="warning" {...attributes}{...listeners}>
+              <IconButton color="warning" {...attributes} {...listeners}>
                 <MenuIcon />
               </IconButton>
             </div>
           </Box>
-
+        
           <Grid
             container
             alignItems="center"
-            spacing={0.5}
-            margin={0.5}
+             spacing={0.25}
+           // margin={0.5}
             // marginBottom={2}
-            lineHeight={1}
-            border={1}
+            //lineHeight={1}
+            border={0.5}
             borderColor="#EEEFE9"
           >
-            <Grid item xs={6}>
+            <Grid item xs={6}   style={{borderBottom:"1px solid",
+                  borderBottomColor:"#EEEFE9",}}>
               <InputLabel
                 style={{
                   color: "#040404",
@@ -113,25 +105,32 @@ const PlannerItem = ({
                   textAlign: "left",
                   marginLeft: 5,
                 }}
+                component={"p"}
               >
+                
                 Name
                 <InfoOutlinedIcon
                   style={{ marginLeft: 10, width: 15, color: "#217AC0" }}
                 />
               </InputLabel>
+              
             </Grid>
 
-            <Grid item xs={6}>
+            <Grid item xs={6} style={{borderBottom:"1px solid",
+                  borderBottomColor:"#d6d3ce",borderTop:"1px solid",
+                  borderTopColor:"#d6d3ce"}} bgcolor={"#d6d3ce"}>
+            
               <TextField
                 style={{
                   width: "100%",
-                  height: 30,
-                  backgroundColor: "#EEEFE9",
-                  // borderBlockWidth: 1,
-                  // borderRadius: 5,
-                  // marginBottom: 1,
+                  borderBottom:"1px solid",
+                  borderBottomColor:"#EEEFE9",
+                  borderTop:"1px solid",
+                 borderTopColor:"#d6d3ce"
+                 
                 }}
-                size="small"
+                required={true}
+                
                 type="text"
                 onChange={(e) =>
                   handleEditPlanner("name", e.target.value, plannerItem.tempId)
@@ -139,10 +138,22 @@ const PlannerItem = ({
                 name="name"
                 value={name}
                 onInput={handleNameChange}
+                sx={{
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "transparent"
+                  },
+        
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      border: "2px solid black"
+                    }
+                  }
+                }}
               />
             </Grid>
-
-            <Grid item xs={6}>
+                  
+            <Grid item xs={6} style={{borderBottom:"1px solid",
+                  borderBottomColor:"#EEEFE9",}}>
               <InputLabel
                 style={{
                   color: "#040404",
@@ -150,35 +161,49 @@ const PlannerItem = ({
                   textAlign: "left",
                   marginLeft: 5,
                 }}
+                component={"p"}
               >
                 Scheduling Lead time
-                <InfoOutlinedIcon 
+                <InfoOutlinedIcon
                   style={{ marginLeft: 10, width: 15, color: "#217AC0" }}
                 />
               </InputLabel>
+              
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6}  style={{borderBottom:"1px solid",
+                  borderBottomColor:"#d6d3ce",borderTop:"1px solid",
+                  borderTopColor:"#d6d3ce"}} bgcolor={"#d6d3ce"}>
               <TextField
                 style={{
                   width: "100%",
-                  height: 30,
-                  backgroundColor: "#EEEFE9",
+                  borderBottom:"1px solid",
+                  borderBottomColor:"#EEEFE9",
+                  borderTop:"1px solid",
+                 borderTopColor:"#d6d3ce",
                   textAlign: "left",
-                  // borderBlockWidth: 1,
-                  // borderRadius: 5,
-                   marginTop: 10,
-                  // marginBottom: 15,
+                  //marginTop: 8,
+
                 }}
-                size="small"
+                sx={{
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "transparent"
+                  },
+        
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      border: "2px solid black"
+                    }
+                  }
+                }}
                 type="number"
-                id="inputPassword5"
-                placeholder="Minutes"
-                aria-placeholder="right"
+                
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">Minutes</InputAdornment>,
+                }}
                 name="scheduleLeadTime"
                 aria-label="Minutes"
-                //label="Minutes"
-                   //value={scheduleLeadTime}
-                //onInput={handleScheduleTime}
+                
+                id="input-with-icon-textfield"
                 onChange={(e) =>
                   handleEditPlanner(
                     "schedulingLeadtime",
@@ -187,8 +212,10 @@ const PlannerItem = ({
                   )
                 }
               />
+              
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} style={{borderBottom:"1px solid",
+                  borderBottomColor:"#EEEFE9",}}>
               <InputLabel
                 style={{
                   color: "#040404",
@@ -196,21 +223,37 @@ const PlannerItem = ({
                   textAlign: "left",
                   marginLeft: 5,
                 }}
+                component={"p"}
               >
                 Attendant Seats
                 <InfoOutlinedIcon
                   style={{ marginLeft: 10, width: 15, color: "#217AC0" }}
                 />
               </InputLabel>
+              
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6}  style={{borderBottom:"1px solid",
+                  borderBottomColor:"#d6d3ce",borderTop:"1px solid",
+                  borderTopColor:"#d6d3ce"}} bgcolor={"#d6d3ce"}>
               <Select
                 style={{
                   width: "100%",
-                  height: 30,
-                  backgroundColor: "#EEEFE9",
+                  borderBottom:"1px solid",
+                  borderBottomColor:"#EEEFE9",
+                  borderTop:"1px solid",
+                  borderTopColor:"#d6d3ce",
                   textAlign: "left",
-                  marginTop: 10,
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "transparent"
+                  },
+        
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      border: "2px solid black"
+                    }
+                  }
                 }}
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
@@ -229,8 +272,10 @@ const PlannerItem = ({
                   </MenuItem>
                 ))}
               </Select>
+              
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} style={{borderBottom:"1px solid",
+                  borderBottomColor:"#EEEFE9",}}>
               <InputLabel
                 style={{
                   color: "#040404",
@@ -238,19 +283,25 @@ const PlannerItem = ({
                   textAlign: "left",
                   marginLeft: 5,
                 }}
+                component={"p"}
               >
                 Stretchers
                 <InfoOutlinedIcon
                   style={{ marginLeft: 10, width: 15, color: "#217AC0" }}
                 />
               </InputLabel>
+              
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6}  style={{borderBottom:"1px solid",
+                  borderBottomColor:"#d6d3ce",borderTop:"1px solid",
+                  borderTopColor:"#d6d3ce"}} bgcolor={"#d6d3ce"}>
               <Select
                 style={{
                   width: "100%",
-                  height: 30,
-                  backgroundColor: "#EEEFE9",
+                  borderBottom:"1px solid",
+                  borderBottomColor:"#EEEFE9",
+                  borderTop:"1px solid",
+                 borderTopColor:"#d6d3ce",
                   textAlign: "left",
                 }}
                 labelId="demo-simple-select-label"
@@ -263,6 +314,17 @@ const PlannerItem = ({
                     plannerItem.tempId
                   )
                 }
+                sx={{
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "transparent"
+                  },
+        
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      border: "2px solid black"
+                    }
+                  }
+                }}
               >
                 {stretchers.map((item, index) => (
                   <MenuItem key={index} value={item.name}>
@@ -270,8 +332,10 @@ const PlannerItem = ({
                   </MenuItem>
                 ))}
               </Select>
+             
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} style={{borderBottom:"1px solid",
+                  borderBottomColor:"#EEEFE9",}}>
               <InputLabel
                 style={{
                   color: "#040404",
@@ -279,19 +343,25 @@ const PlannerItem = ({
                   textAlign: "left",
                   marginLeft: 5,
                 }}
+                component={"p"}
               >
                 Acuity
                 <InfoOutlinedIcon
                   style={{ marginLeft: 10, width: 15, color: "#217AC0" }}
                 />
               </InputLabel>
+             
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6}   style={{borderBottom:"1px solid",
+                  borderBottomColor:"#EEEFE9",borderTop:"1px solid",
+                  borderTopColor:"#d6d3ce"}} bgcolor={"#d6d3ce"}>
               <Select
                 style={{
                   width: "100%",
-                  height: 30,
-                  backgroundColor: "#EEEFE9",
+                  borderBottom:"1px solid",
+                  borderBottomColor:"#EEEFE9",
+                  borderTop:"1px solid",
+                 borderTopColor:"#d6d3ce",
                   textAlign: "left",
                 }}
                 labelId="demo-multiple-name-label"
@@ -300,9 +370,14 @@ const PlannerItem = ({
                 name="acuity"
                 value={acuity}
                 input={<OutlinedInput label="Name" />}
+                renderValue={(selected) => selected.join(', ')}
                 onChange={handleAcuityChange}
                 onClose={(event) =>
-                  handleEditPlanner('acuity', acuity.toString(), plannerItem.tempId)
+                  handleEditPlanner(
+                    "acuity",
+                    acuity.toString(),
+                    plannerItem.tempId
+                  )
                 }
                 onClick={(e) =>
                   handleEditPlanner(
@@ -311,15 +386,31 @@ const PlannerItem = ({
                     plannerItem.tempId
                   )
                 }
+                sx={{
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "transparent"
+                  },
+        
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      border: "2px solid black"
+                    }
+                  }
+                }}
               >
                 {Acuity.map((name, index) => (
                   <MenuItem key={index} value={name.name}>
-                    {name.name}
+                    <ListItem>
+              <Checkbox checked={acuity.indexOf(name.name) > -1} />
+              <ListItemText primary={name.name} />
+              </ListItem>
                   </MenuItem>
                 ))}
               </Select>
+            
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} style={{borderBottom:"1px solid",
+                  borderBottomColor:"#EEEFE9",}}>
               <InputLabel
                 style={{
                   color: "#040404",
@@ -327,25 +418,42 @@ const PlannerItem = ({
                   textAlign: "left",
                   marginLeft: 5,
                 }}
+                component={"p"}
               >
                 MultiLoad Allowed?
                 <InfoOutlinedIcon
                   style={{ marginLeft: 10, width: 15, color: "#217AC0" }}
                 />
               </InputLabel>
+            
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} style={{borderBottom:"1px solid",
+                  borderBottomColor:"#d6d3ce",borderTop:"1px solid",
+                  borderTopColor:"#d6d3ce"}} bgcolor={"#d6d3ce"}>
               <Select
                 style={{
                   width: "100%",
-                  height: 30,
-                  backgroundColor: "#EEEFE9",
+                  borderBottom:"1px solid",
+                  borderBottomColor:"#EEEFE9",
+                  borderTop:"1px solid",
+                 borderTopColor:"#d6d3ce",
                   textAlign: "left",
                 }}
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
+                labelId="demo-simple-select-standard"
+                id="demo-simple-select-standard"
                 name="isMultiLoad"
                 label="MultiLoad Allowed"
+                sx={{
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "transparent"
+                  },
+        
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      border: "2px solid black"
+                    }
+                  }
+                }}
                 onChange={(e) =>
                   handleEditPlanner(
                     "isMultiLoad",
@@ -360,8 +468,10 @@ const PlannerItem = ({
                   </MenuItem>
                 ))}
               </Select>
+             
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} style={{borderBottom:"1px solid",
+                  borderBottomColor:"#EEEFE9",}}>
               <InputLabel
                 style={{
                   color: "#040404",
@@ -369,20 +479,26 @@ const PlannerItem = ({
                   textAlign: "left",
                   marginLeft: 5,
                 }}
+                component={"p"}
               >
                 Serviced By
                 <InfoOutlinedIcon
                   style={{ marginLeft: 10, width: 15, color: "#217AC0" }}
                 />
               </InputLabel>
+            
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} style={{borderBottom:"1px solid",
+                  borderBottomColor:"#d6d3ce",borderTop:"1px solid",
+                  borderTopColor:"#d6d3ce"}} bgcolor={"#d6d3ce"}>
               <Select
                 style={{
                   width: "100%",
-                  height: 30,
-                  backgroundColor: "#EEEFE9",
+                  borderBottom:"1px solid",
+                  borderBottomColor:"#EEEFE9",
                   textAlign: "left",
+                  borderTop:"1px solid",
+                 borderTopColor:"#d6d3ce"
                 }}
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
@@ -395,6 +511,17 @@ const PlannerItem = ({
                     plannerItem.tempId
                   )
                 }
+                sx={{
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "transparent"
+                  },
+        
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      border: "2px solid black"
+                    }
+                  }
+                }}
               >
                 {ServicedBy.map((item, index) => (
                   <MenuItem key={index} value={item.name}>
@@ -402,8 +529,10 @@ const PlannerItem = ({
                   </MenuItem>
                 ))}
               </Select>
+             
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} style={{borderBottom:"1px solid",
+                  borderBottomColor:"#EEEFE9",}}>
               <InputLabel
                 style={{
                   color: "#040404",
@@ -411,25 +540,42 @@ const PlannerItem = ({
                   textAlign: "left",
                   marginLeft: 5,
                 }}
+                component={"p"}
               >
                 Parallel Pickups/Dropoffs
                 <InfoOutlinedIcon
                   style={{ marginLeft: 10, width: 15, color: "#217AC0" }}
                 />
               </InputLabel>
+             
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6}  style={{borderBottom:"1px solid",borderBottomColor:"#d6d3ce",borderTop:"1px solid",
+                 borderTopColor:"#d6d3ce"}}bgcolor={"#d6d3ce"} >
               <Select
                 style={{
                   width: "100%",
-                  height: 30,
-                  backgroundColor: "#EEEFE9",
                   textAlign: "left",
+                  borderBottom:"1px solid",
+                  borderBottomColor:"#EEEFE9",
+                  borderTop:"1px solid",
+                 borderTopColor:"#d6d3ce"
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "transparent"
+                  },
+        
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      border: "2px solid black"
+                    }
+                  }
                 }}
                 name="isParalllelPickup"
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 label="Parallel Pickups"
+                variant="outlined"
                 onChange={(e) =>
                   handleEditPlanner(
                     "isParalllelPickup",
@@ -444,13 +590,13 @@ const PlannerItem = ({
                   </MenuItem>
                 ))}
               </Select>
+           
             </Grid>
           </Grid>
         </Box>
-        </div>
+      </div>
     </div>
   );
 };
 
 export default PlannerItem;
-
