@@ -3,12 +3,19 @@ import { useState } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { IPlannerDetail, dummyObject } from "../../Component/Planner";
 import { createNewPlanner } from "../../Services/Planner";
-import { arrayMove } from "@dnd-kit/sortable";
+import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   DndContext,
+  DragOverEvent,
+  DragOverlay,
+  DragStartEvent,
   KeyboardSensor,
   PointerSensor,
   TouchSensor,
+  UniqueIdentifier,
+  closestCenter,
   closestCorners,
   useSensor,
   useSensors,
@@ -17,6 +24,8 @@ import "react-toastify/dist/ReactToastify.css";
 import Planners from "./Planners";
 import { Droppable } from "../../Component/Droppable";
 import { Draggable } from "../../Component/Draggable";
+import PlannerItem from "./PlannerItem";
+import Header from "../../Component/Header";
 
 const Planner = () => {
   const [planner, setPlanner] = useState<IPlannerDetail[]>([]);
@@ -24,6 +33,7 @@ const Planner = () => {
   const [seqCount, setCount] = useState(0);
   const [id, setId] = useState(0);
   const [isDropped, setIsDropped] = useState(false);
+  const [activeItem, setActiveItem] = useState<IPlannerDetail>();
 
   const handleAddNewPlanner = () => {
     setPageLoad(true);
@@ -54,7 +64,26 @@ const Planner = () => {
     setPageLoad(true);
   };
   const handleSaveFunction = () => {
+    let shouldSave = true;
     if (planner.length > 0) {
+      planner.forEach((element) => {
+        if (
+          element.name !== "" &&
+          element.schedulingLeadtime !== 0 &&
+          element.acuity !== "" &&
+          element.stretchers !== 0
+        ) {
+          
+        } else {
+          shouldSave=false
+          
+        }
+      
+      });
+    } else {
+      toast('No item Added!');
+    }
+    if(shouldSave && planner.length>0){
       const savePlanner = {
         id: 0,
         plannerName: "New Planner",
@@ -73,38 +102,60 @@ const Planner = () => {
         })
         .catch((error) => {
           console.log(error);
+          toast(error.message)
         });
-    } else {
-      alert("No item Added");
+
+    }
+    else if(planner.length>0){
+      toast("Name,Scheduling Lead time,Acuity,Streachers, please fill above mentioned fields...")
     }
   };
   const getPostion = (id: any) => planner.findIndex((x) => x.tempId === id);
   const setSequence = (id: any) => planner.find((x) => x.sequence === id);
   const handleDrag = (event: any) => {
     const { active, over } = event;
-    if (
-      active?.id !== undefined &&
-      over?.id !== undefined &&
-      active?.id !== null &&
-      over?.id !== null
-    ) {
-      if (active.id === over.id) return;
-      setPlanner((planner) => {
-        const original = getPostion(active.id);
-        const newPostion = getPostion(over.id);
-        return arrayMove(planner, original, newPostion);
-      });
+    if (!over) return;
+    const activeItem = planner.find((item) => item.tempId === active.id);
+    const overItem = planner.find((item) => item.tempId === over.id);
+
+    if (!activeItem || !overItem) {
+      return;
     }
-    // if (event.over && event.over.id === 'droppable') {
-    //   setIsDropped(true);
+    const activeIndex = planner.findIndex((item) => item.tempId === active.id);
+    const overIndex = planner.findIndex((item) => item.tempId === over.id);
+
+    if (activeIndex !== overIndex) {
+      setPlanner((planner) => arrayMove(planner, activeIndex, overIndex));
+    }
+    setActiveItem(undefined);
+    // const { active, over } = event;
+    // if (
+    //   active?.id !== undefined &&
+    //   over?.id !== undefined &&
+    //   active?.id !== null &&
+    //   over?.id !== null
+    // ) {
+    //   if (active.id === over.id) return;
+    //   setPlanner((planner) => {
+    //     const original = getPostion(active.id);
+    //     const newPostion = getPostion(over.id);
+    //     return arrayMove(planner, original, newPostion);
+    //   });
     // }
   };
+  const handleDragCancel = () => {
+    setActiveItem(undefined);
+  };
   const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(TouchSensor)
-    // useSensor(KeyboardSensor, {
-    //   coordinateGetter: sortableKeyboardCoordinates,
-    // })
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 10,
+      },
+    }),
+    useSensor(TouchSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
   );
   const handleRemoveItem = (id: number) => {
     setPlanner((prevPlanner) => {
@@ -116,14 +167,20 @@ const Planner = () => {
         ];
         return newPlanner;
       }
-      return prevPlanner;
+   return prevPlanner;
     });
+    console.log("preview",planner)
   };
-  // const draggableMarkup = (
-  //   <Draggable></Draggable>
-  // );
+
+  const handleDragStart = (event: any) => {
+    const { active } = event;
+
+    setActiveItem(planner.find((item) => item.tempId === active.id));
+  };
   return (
-    <div style={{margin:50,marginLeft:50}}>
+    <>
+    <Header />
+    <div style={{ margin: 50, marginLeft: 50 }}>
       <Stack spacing={2}>
         <div>
           <>
@@ -154,19 +211,27 @@ const Planner = () => {
             <>
               <DndContext
                 sensors={sensors}
-                
-                collisionDetection={closestCorners}
+                onDragStart={handleDragStart}
+                onDragCancel={handleDragCancel}
                 onDragEnd={handleDrag}
+                collisionDetection={closestCenter}
               >
-                 {/* {!isDropped ? draggableMarkup : null}
-                 <Droppable>
-        {isDropped ? draggableMarkup : 'Drop here'}
-      </Droppable> */}
                 <Planners
                   planner={planner}
                   handleEditPlanner={handleEditPlanner}
                   handleRemoveItem={handleRemoveItem}
                 />
+                <DragOverlay adjustScale style={{ transformOrigin: "0 0 " }}>
+                  {activeItem ? (
+                    <PlannerItem
+                      plannerItem={activeItem}
+                      handleEditPlanner={handleEditPlanner}
+                      handleRemoveItem={handleRemoveItem}
+                      tempId={activeItem.tempId}
+                      isDragging
+                    />
+                  ) : null}
+                </DragOverlay>
               </DndContext>
             </>
           )}
@@ -182,7 +247,7 @@ const Planner = () => {
               color="primary"
               startIcon={<AddCircleOutlineIcon />}
               onClick={handleAddNewPlanner}
-              style={{textTransform:"capitalize"}}
+              style={{ textTransform: "capitalize" }}
             >
               Add New Planner
             </Button>
@@ -193,13 +258,18 @@ const Planner = () => {
               display: "flex",
               alignItems: "center",
               justifyContent: "flex-start",
-              marginTop:10
+              marginTop: 10,
             }}
           >
             <Button
               color="primary"
               variant="contained"
-              style={{ margin: 8, padding: 5, width: "12%" ,textTransform:"capitalize"}}
+              style={{
+                margin: 8,
+                padding: 5,
+                width: "12%",
+                textTransform: "capitalize",
+              }}
               onClick={handleSaveFunction}
             >
               <span
@@ -215,7 +285,12 @@ const Planner = () => {
 
             <Button
               variant="contained"
-              style={{ margin: 8, padding: 5, width: "12%",textTransform:"capitalize" }}
+              style={{
+                margin: 8,
+                padding: 5,
+                width: "12%",
+                textTransform: "capitalize",
+              }}
               color="inherit"
               onClick={handleCancelFunction}
             >
@@ -223,8 +298,14 @@ const Planner = () => {
             </Button>
           </div>
         </div>
+        <ToastContainer
+         className="toast-container"
+         toastClassName="custom-toast"
+         bodyClassName="custom-toast-body"
+         progressClassName="custom-toast-progress" />
       </Stack>
-      </div>
+    </div>
+    </>
   );
 };
 

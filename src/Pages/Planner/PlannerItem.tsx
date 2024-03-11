@@ -1,17 +1,22 @@
 import {
   Box,
   Checkbox,
+  FormControlLabel,
   Grid,
   IconButton,
   InputAdornment,
   InputLabel,
   ListItem,
   MenuItem,
+  Radio,
+  RadioGroup,
+  RadioProps,
   Select,
   SelectChangeEvent,
 } from "@mui/material";
 import ListItemText from '@mui/material/ListItemText';
-import { useState } from "react";
+import { CSSProperties, HTMLAttributes, forwardRef, useState } from "react";
+
 import {
   Acuity,
   AllowMultiple,
@@ -30,20 +35,36 @@ import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
 import "./index.css";
 import { useDraggable } from "@dnd-kit/core";
+import PhoneNumber from 'libphonenumber-js';
 
 const PlannerItem = ({
   handleRemoveItem,
   handleEditPlanner,
   plannerItem,
   tempId,
-}: IPlannerItemProps) => {
-  const { attributes, transform, listeners, setNodeRef } =
+  isDragging,
+  isOpacityEnabled
+  
+}:IPlannerItemProps) => {
+  const { attributes,transform, listeners, setNodeRef } =
   useSortable({ id: tempId });
-  const style = {
-    transform: CSS.Transform.toString(transform),
+  console.log("activeItem",isDragging)
+  const style:CSSProperties = {
+    opacity: isDragging ? "0.5" : "1",
+    cursor: isDragging ? "grabbing" : "grab",
+    lineHeight: "0.5",
+    transform: isDragging ? "scale(1.05)" : "scale(1)",
+   boxShadow: isDragging
+    ? "none"
+    : "rgb(63 63 68 / 5%) 0px 0px 0px 1px, rgb(34 33 81 / 15%) 0px 1px 3px 0px",
+    //transform: CSS.Transform.toString(transform),
+    filter: isDragging ? "blur(4px)" : "none",
+    backdropFilter: "blur(5px)",
+    backgroundColor: isDragging ?"rgba(0, 0, 0, 0.5)":"none",
   };
   const [acuity, setAcuity] = useState<string[]>([]);
   const [name, setName] = useState("");
+  const [scheduleLeadTime,setSchecduleLeadtime]=useState('')
 
   const handleAcuityChange = (event: SelectChangeEvent<typeof acuity>) => {
     const {
@@ -54,14 +75,66 @@ const PlannerItem = ({
   };
   const handleNameChange = (event: any) => {
     const value = event.target.value;
-    const regex = /^[a-zA-Z]*$/;
-    if (regex.test(value)) {
+    const regex = /^[a-zA-Z ]*$/;
+    if (regex.test(value) ) {
       setName(value);
     }
   };
- 
+  const handleScheduleTime = (event: any) => {
+    const value = event.target.value;
+    const regex = /^[0-9]*$/;
+    if (regex.test(value)) {
+      const length = value.slice(0, 9);
+      setSchecduleLeadtime(length);
+    }
+  };
+  function BpRadio(props: RadioProps) {
+    console.log("bp",props)
+    return (
+      <Radio
+        disableRipple
+        color="default"
+        // checkedIcon={<BpCheckedIcon />}
+        // icon={<BpIcon />}
+        {...props}
+      />
+    );
+  }
+  const [phoneNumber, setPhoneNumber] = useState('');
+
+  const handlePhoneNumberChange = (event:any) => {
+    const inputPhoneNumber = event.target.value;
+    setPhoneNumber(inputPhoneNumber);
+  };
+  const formatPhoneNumber = (event:any) => {
+    
+    const formattedNumber = PhoneNumber(phoneNumber, 'AU')?.formatNational();
+    console.log(formattedNumber)
+    return formattedNumber;
+  };
+  const [dateOfBirth, setDateOfBirth] = useState('');
+  const [age, setAge] = useState(Number);
+  const calculateAge = (dob:any) => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const handleDateChange = (event:any) => {
+    const dob = event.target.value;
+    setDateOfBirth(dob);
+    const calculatedAge = calculateAge(dob);
+    console.log(calculatedAge)
+    setAge(calculatedAge);
+  };
   return (
-    <div draggable ref={setNodeRef} style={style}>
+    <div ref={setNodeRef} style={{...style,
+      backgroundColor: isDragging ? "GrayText" : "none", }}  >
       <div>
         <Box display="flex">
           <Box
@@ -80,7 +153,14 @@ const PlannerItem = ({
               </IconButton>
             </div>
             <div style={{ flex: 1 }}>
-              <IconButton color="warning" {...attributes} {...listeners}>
+              <IconButton color="warning" {...attributes} {...listeners} style={{
+            borderRadius: "8px",
+            boxShadow: isDragging
+              ? "none"
+              : "rgb(63 63 68 / 5%) 0px 0px 0px 1px, rgb(34 33 81 / 15%) 0px 1px 3px 0px",
+            maxWidth: "100%",
+            objectFit: "fill"
+          }}>
                 <MenuIcon />
               </IconButton>
             </div>
@@ -96,15 +176,47 @@ const PlannerItem = ({
             border={0.5}
             borderColor="#EEEFE9"
           >
-            <Grid item xs={6}   style={{borderBottom:"1px solid",
+             <input type="date" id="dob" value={dateOfBirth} onChange={handleDateChange} />
+      {age !== null && (
+        <p>Age: {age}</p>
+      )}
+             <RadioGroup
+        defaultValue="female"
+        aria-labelledby="demo-customized-radios"
+        name="customized-radios"
+      >
+         <FormControlLabel value="female" control={<BpRadio />} label="Female" />
+        <FormControlLabel value="male" control={<BpRadio />} label="Male" />
+        <FormControlLabel value="other" control={<BpRadio />} label="Other" />
+      </RadioGroup>
+      <label>Phone Number:</label>
+      <TextField
+        label="Phone Number"
+        variant="outlined"
+        value={phoneNumber}
+        onChange={handlePhoneNumberChange}
+        // Format the phone number with country code
+        onBlur={(event) => formatPhoneNumber(event)}
+      />
+            <Grid item xs={6}    style={{borderBottom:"1px solid",
                   borderBottomColor:"#EEEFE9",}}>
               <InputLabel
-                style={{
-                  color: "#040404",
-                  fontFamily: "sans-serif",
-                  textAlign: "left",
-                  marginLeft: 5,
-                }}
+               sx={{
+                color: '#040404',
+                fontFamily: 'sans-serif',
+                textAlign: 'left',
+                margin:0,
+                marginLeft: 1,
+                padding: '0px',
+              }}
+                // style={{
+                //   height:"30px",
+                //   color: "#040404",
+                //   fontFamily: "sans-serif",
+                //   textAlign: "left",
+                //   marginLeft: 0,
+                //   padding:0
+                // }}
                 component={"p"}
               >
                 
@@ -123,11 +235,11 @@ const PlannerItem = ({
               <TextField
                 style={{
                   width: "100%",
-                  borderBottom:"1px solid",
+                  borderBottom:"0px solid",
                   borderBottomColor:"#EEEFE9",
                   borderTop:"1px solid",
-                 borderTopColor:"#d6d3ce"
-                 
+                 borderTopColor:"#d6d3ce",
+                 margin:0
                 }}
                 required={true}
                 
@@ -135,6 +247,7 @@ const PlannerItem = ({
                 onChange={(e) =>
                   handleEditPlanner("name", e.target.value, plannerItem.tempId)
                 }
+                inputProps={{ maxLength: 100,padding: 0, }}
                 name="name"
                 value={name}
                 onInput={handleNameChange}
@@ -145,9 +258,13 @@ const PlannerItem = ({
         
                   "& .MuiOutlinedInput-root": {
                     "&.Mui-focused fieldset": {
-                      border: "2px solid black"
-                    }
+                      border: "1px solid black",
+                    },
+                    "& .MuiOutlinedInput-input": {
+                      padding: "0"
                   }
+                  },
+             
                 }}
               />
             </Grid>
@@ -155,12 +272,15 @@ const PlannerItem = ({
             <Grid item xs={6} style={{borderBottom:"1px solid",
                   borderBottomColor:"#EEEFE9",}}>
               <InputLabel
-                style={{
-                  color: "#040404",
-                  fontFamily: "sans-serif",
-                  textAlign: "left",
-                  marginLeft: 5,
-                }}
+                  sx={{
+                    color: '#040404',
+                    // fontFamily:"Calibri (Body)",
+                    fontFamily: 'sans-serif',
+                    textAlign: 'left',
+                    margin:0,
+                    marginLeft: 1,
+                    padding: '0px',
+                  }}
                 component={"p"}
               >
                 Scheduling Lead time
@@ -176,14 +296,17 @@ const PlannerItem = ({
               <TextField
                 style={{
                   width: "100%",
-                  borderBottom:"1px solid",
+                  borderBottom:"0px solid",
                   borderBottomColor:"#EEEFE9",
-                  borderTop:"1px solid",
+                  borderTop:"2px solid",
                  borderTopColor:"#d6d3ce",
                   textAlign: "left",
+                  margin:0,
+                  backgroundColor:"#d6d3ce"
                   //marginTop: 8,
 
                 }}
+                
                 sx={{
                   "& .MuiOutlinedInput-notchedOutline": {
                     border: "transparent"
@@ -191,37 +314,48 @@ const PlannerItem = ({
         
                   "& .MuiOutlinedInput-root": {
                     "&.Mui-focused fieldset": {
-                      border: "2px solid black"
-                    }
+                      border: "1px solid black"
+                    },
+                    "& .MuiOutlinedInput-input": {
+                      padding: "0"
+                  }
                   }
                 }}
                 type="number"
-                
                 InputProps={{
                   endAdornment: <InputAdornment position="end">Minutes</InputAdornment>,
+                  inputProps: {
+                    maxLength: 9
+                  }
+                }}
+                inputProps={{
+                  maxLength: 9, // Set maxLength here
                 }}
                 name="scheduleLeadTime"
                 aria-label="Minutes"
-                
+                value={scheduleLeadTime}
                 id="input-with-icon-textfield"
                 onChange={(e) =>
                   handleEditPlanner(
                     "schedulingLeadtime",
-                    e.target.value,
+                    scheduleLeadTime,
                     plannerItem.tempId
                   )
                 }
+                onInput={handleScheduleTime}
               />
               
             </Grid>
             <Grid item xs={6} style={{borderBottom:"1px solid",
                   borderBottomColor:"#EEEFE9",}}>
               <InputLabel
-                style={{
-                  color: "#040404",
-                  fontFamily: "sans-serif",
-                  textAlign: "left",
-                  marginLeft: 5,
+                sx={{
+                  color: '#040404',
+                  fontFamily: 'sans-serif',
+                  textAlign: 'left',
+                  margin:0,
+                  marginLeft: 1,
+                  padding: '0px',
                 }}
                 component={"p"}
               >
@@ -238,11 +372,13 @@ const PlannerItem = ({
               <Select
                 style={{
                   width: "100%",
+                  height:"30px",
                   borderBottom:"1px solid",
                   borderBottomColor:"#EEEFE9",
                   borderTop:"1px solid",
                   borderTopColor:"#d6d3ce",
                   textAlign: "left",
+                  padding: "0" 
                 }}
                 sx={{
                   "& .MuiOutlinedInput-notchedOutline": {
@@ -252,7 +388,7 @@ const PlannerItem = ({
                   "& .MuiOutlinedInput-root": {
                     "&.Mui-focused fieldset": {
                       border: "2px solid black"
-                    }
+                    },
                   }
                 }}
                 labelId="demo-simple-select-label"
@@ -277,12 +413,14 @@ const PlannerItem = ({
             <Grid item xs={6} style={{borderBottom:"1px solid",
                   borderBottomColor:"#EEEFE9",}}>
               <InputLabel
-                style={{
-                  color: "#040404",
-                  fontFamily: "sans-serif",
-                  textAlign: "left",
-                  marginLeft: 5,
-                }}
+                  sx={{
+                    color: '#040404',
+                    fontFamily: 'sans-serif',
+                    textAlign: 'left',
+                    margin:0,
+                    marginLeft: 1,
+                    padding: '0px',
+                  }}
                 component={"p"}
               >
                 Stretchers
@@ -298,11 +436,13 @@ const PlannerItem = ({
               <Select
                 style={{
                   width: "100%",
+                  height:"30px",
                   borderBottom:"1px solid",
                   borderBottomColor:"#EEEFE9",
                   borderTop:"1px solid",
                  borderTopColor:"#d6d3ce",
                   textAlign: "left",
+                  padding:0
                 }}
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
@@ -322,7 +462,10 @@ const PlannerItem = ({
                   "& .MuiOutlinedInput-root": {
                     "&.Mui-focused fieldset": {
                       border: "2px solid black"
-                    }
+                    },
+                    "& .MuiOutlinedInput-input": {
+                      padding: "0"
+                  }
                   }
                 }}
               >
@@ -337,12 +480,14 @@ const PlannerItem = ({
             <Grid item xs={6} style={{borderBottom:"1px solid",
                   borderBottomColor:"#EEEFE9",}}>
               <InputLabel
-                style={{
-                  color: "#040404",
-                  fontFamily: "sans-serif",
-                  textAlign: "left",
-                  marginLeft: 5,
-                }}
+                  sx={{
+                    color: '#040404',
+                    fontFamily: 'sans-serif',
+                    textAlign: 'left',
+                    margin:0,
+                    marginLeft: 1,
+                    padding: '0px',
+                  }}
                 component={"p"}
               >
                 Acuity
@@ -358,11 +503,13 @@ const PlannerItem = ({
               <Select
                 style={{
                   width: "100%",
+                  height:"30px",
                   borderBottom:"1px solid",
                   borderBottomColor:"#EEEFE9",
                   borderTop:"1px solid",
                  borderTopColor:"#d6d3ce",
                   textAlign: "left",
+                  padding:0
                 }}
                 labelId="demo-multiple-name-label"
                 id="demo-multiple-name"
@@ -394,7 +541,10 @@ const PlannerItem = ({
                   "& .MuiOutlinedInput-root": {
                     "&.Mui-focused fieldset": {
                       border: "2px solid black"
-                    }
+                    },
+                    "& .MuiOutlinedInput-input": {
+                      padding: "0"
+                  }
                   }
                 }}
               >
@@ -412,12 +562,14 @@ const PlannerItem = ({
             <Grid item xs={6} style={{borderBottom:"1px solid",
                   borderBottomColor:"#EEEFE9",}}>
               <InputLabel
-                style={{
-                  color: "#040404",
-                  fontFamily: "sans-serif",
-                  textAlign: "left",
-                  marginLeft: 5,
-                }}
+                   sx={{
+                    color: '#040404',
+                    fontFamily: 'sans-serif',
+                    textAlign: 'left',
+                    margin:0,
+                    marginLeft: 1,
+                    padding: '0px',
+                  }}
                 component={"p"}
               >
                 MultiLoad Allowed?
@@ -433,11 +585,13 @@ const PlannerItem = ({
               <Select
                 style={{
                   width: "100%",
+                  height:"30px",
                   borderBottom:"1px solid",
                   borderBottomColor:"#EEEFE9",
                   borderTop:"1px solid",
                  borderTopColor:"#d6d3ce",
                   textAlign: "left",
+                  padding:0
                 }}
                 labelId="demo-simple-select-standard"
                 id="demo-simple-select-standard"
@@ -451,9 +605,11 @@ const PlannerItem = ({
                   "& .MuiOutlinedInput-root": {
                     "&.Mui-focused fieldset": {
                       border: "2px solid black"
-                    }
+                    },
+
                   }
                 }}
+                defaultValue={"No"}
                 onChange={(e) =>
                   handleEditPlanner(
                     "isMultiLoad",
@@ -473,12 +629,14 @@ const PlannerItem = ({
             <Grid item xs={6} style={{borderBottom:"1px solid",
                   borderBottomColor:"#EEEFE9",}}>
               <InputLabel
-                style={{
-                  color: "#040404",
-                  fontFamily: "sans-serif",
-                  textAlign: "left",
-                  marginLeft: 5,
-                }}
+                   sx={{
+                    color: '#040404',
+                    fontFamily: 'sans-serif',
+                    textAlign: 'left',
+                    margin:0,
+                    marginLeft: 1,
+                    padding: '0px',
+                  }}
                 component={"p"}
               >
                 Serviced By
@@ -494,16 +652,19 @@ const PlannerItem = ({
               <Select
                 style={{
                   width: "100%",
+                  height:"30px",
                   borderBottom:"1px solid",
                   borderBottomColor:"#EEEFE9",
                   textAlign: "left",
                   borderTop:"1px solid",
-                 borderTopColor:"#d6d3ce"
+                 borderTopColor:"#d6d3ce",
+                 padding:0
                 }}
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 name="servicedBy"
                 label="ServicedBy"
+                defaultValue={"SMA Fleet"}
                 onChange={(e) =>
                   handleEditPlanner(
                     "servicedBy",
@@ -519,7 +680,7 @@ const PlannerItem = ({
                   "& .MuiOutlinedInput-root": {
                     "&.Mui-focused fieldset": {
                       border: "2px solid black"
-                    }
+                    },
                   }
                 }}
               >
@@ -534,12 +695,14 @@ const PlannerItem = ({
             <Grid item xs={6} style={{borderBottom:"1px solid",
                   borderBottomColor:"#EEEFE9",}}>
               <InputLabel
-                style={{
-                  color: "#040404",
-                  fontFamily: "sans-serif",
-                  textAlign: "left",
-                  marginLeft: 5,
-                }}
+                  sx={{
+                    color: '#040404',
+                    fontFamily: 'sans-serif',
+                    textAlign: 'left',
+                    margin:0,
+                    marginLeft: 1,
+                    padding: '0px',
+                  }}
                 component={"p"}
               >
                 Parallel Pickups/Dropoffs
@@ -554,11 +717,13 @@ const PlannerItem = ({
               <Select
                 style={{
                   width: "100%",
+                  height:"30px",
                   textAlign: "left",
                   borderBottom:"1px solid",
                   borderBottomColor:"#EEEFE9",
                   borderTop:"1px solid",
-                 borderTopColor:"#d6d3ce"
+                 borderTopColor:"#d6d3ce",
+                 padding:0
                 }}
                 sx={{
                   "& .MuiOutlinedInput-notchedOutline": {
@@ -568,7 +733,10 @@ const PlannerItem = ({
                   "& .MuiOutlinedInput-root": {
                     "&.Mui-focused fieldset": {
                       border: "2px solid black"
-                    }
+                    },
+                    "& .MuiOutlinedInput-input": {
+                      padding: "0"
+                  }
                   }
                 }}
                 name="isParalllelPickup"

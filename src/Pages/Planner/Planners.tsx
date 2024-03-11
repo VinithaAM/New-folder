@@ -5,12 +5,14 @@ import {
 import { Stack } from "@mui/material";
 import PlannerItem from "./PlannerItem";
 import { IPlannerProps } from "./types";
+import { CSS } from "@dnd-kit/utilities"
 
 const Planners = ({
   planner,
   handleEditPlanner,
   handleRemoveItem,
 }: IPlannerProps) => {
+
   return (
     <Stack spacing={2}>
       <SortableContext items={planner} strategy={verticalListSortingStrategy}>
@@ -22,6 +24,7 @@ const Planners = ({
             plannerItem={item}
             handleEditPlanner={handleEditPlanner}
             handleRemoveItem={handleRemoveItem}
+           
           />
         ))}
       </SortableContext>

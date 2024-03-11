@@ -17,7 +17,7 @@ const AppFile=()=> {
   return (
 
     <Stack spacing={1}>
-        <Box  display="flex">
+        <Box  display="flex" sx={{mt: 1 }}>
             <IconButton>
             <MenuIcon />
             </IconButton>

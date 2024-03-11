@@ -1,4 +1,7 @@
+
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Login from "./Login/Login"
+import Index from "./Planner/index"
 
 const Sidebar = () => {
   return (
@@ -6,8 +9,8 @@ const Sidebar = () => {
       <div style={{ display: "flex" }}>
         <div style={{ flex: 1, padding: "10px" }}>
           <Routes>
-            {/* <Route path="/" element={<Home />} />
-            <Route path="/NewPlanner" element={<AddPlanner plannerItem={undefined} setPlannerItem={undefined}/>} /> */}
+            <Route path="/" element={<Login />} />
+            <Route path="/NewPlanner" element={<Index />} />
           </Routes>
         </div>
       </div>

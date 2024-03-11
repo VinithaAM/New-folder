@@ -15,6 +15,8 @@ export interface IPlannerItemProps {
   plannerItem: IPlannerDetail;
   tempId: number;
   handleRemoveItem: (id: number) => void;
+  isOpacityEnabled?: boolean
+  isDragging?: boolean
 }
 export interface IPlannerProps {
   planner: any;
@@ -24,12 +26,13 @@ export interface IPlannerProps {
     id: number
   ) => void;
   handleRemoveItem: (id: number) => void;
+
 }
 export const ServicedBy = [
   {
-    name: "Customer Feet",
+    name: "Customer Fleet",
   },
-  { name: "SMA Feet" },
+  { name: "SMA Fleet" },
 ];
 export const AllowMultiple = [
   { name: "Yes", value: true },
